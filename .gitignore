@@ -5,3 +5,4 @@ CMakeCache.txt
 CMakeFiles
 Testing
 DartConfiguration.tcl
+*.log
