@@ -1,6 +1,7 @@
 Makefile
 CMakeCache.txt
 *.cmake
+!FindCBLAS.cmake
 CMakeFiles
 Testing
 DartConfiguration.tcl

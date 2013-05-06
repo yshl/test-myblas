@@ -1,14 +1,5 @@
-find_library(CBLAS_LIBRARY NAMES satlas HINTS $ENV{CBLASDIR}/lib $ENV{CBLASDIR}/lib64)
-set(CBLAS_LIBRARIES ${CBLAS_LIBRARY})
-
-ADD_EXECUTABLE(compare1 compare1.c)
-SET_TARGET_PROPERTIES(compare1 PROPERTIES LINK_FLAGS ${CBLAS_LIBRARIES})
-TARGET_LINK_LIBRARIES(compare1 myblas)
-
-ADD_EXECUTABLE(compare2 compare2.c)
-SET_TARGET_PROPERTIES(compare2 PROPERTIES LINK_FLAGS ${CBLAS_LIBRARIES})
-TARGET_LINK_LIBRARIES(compare2 myblas)
-
-ADD_EXECUTABLE(compare3 compare3.c)
-SET_TARGET_PROPERTIES(compare3 PROPERTIES LINK_FLAGS ${CBLAS_LIBRARIES})
-TARGET_LINK_LIBRARIES(compare3 myblas)
+foreach(prog compare1 compare2 compare3)
+    ADD_EXECUTABLE(${prog} ${prog}.c)
+    TARGET_LINK_LIBRARIES(${prog} myblas ${CBLAS_LIBRARIES})
+    add_test(${prog} ${prog})
+endforeach()

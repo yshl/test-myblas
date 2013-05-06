@@ -12,5 +12,7 @@ SET(soserial "0")
 INCLUDE_DIRECTORIES("include")
 
 SUBDIRS(src test time)
+
+include("FindCBLAS.cmake")
 enable_testing()
 include(CTest)
