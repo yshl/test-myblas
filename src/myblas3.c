@@ -130,16 +130,16 @@ void my_dgemm(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans_a,
 {
     // c=beta*c+alpha*a*b
     // c[0:m][0:n]
-    if(beta!=1.0){
-	size_t i;
-	for(i=0; i<m; i++){
-	    my_dscal(n,beta,&c[i*ldc],1);
-	}
-    }
-    if(alpha==0.0){
-	return;
-    }
     if(order==CblasRowMajor){
+	if(beta!=1.0){
+	    size_t i;
+	    for(i=0; i<m; i++){
+		my_dscal(n,beta,&c[i*ldc],1);
+	    }
+	}
+	if(alpha==0.0){
+	    return;
+	}
 	if(trans_a==CblasNoTrans){
 	    if(trans_b==CblasNoTrans){
 		my_dgemm_NN(m,n,k,alpha,a,lda,b,ldb,c,ldc);
