@@ -39,8 +39,8 @@ int main()
     for(i=0; i<10; i++)my_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,
 	    m,n,k,alpha,a,k,b,n,beta,c,n);
     t3=clock();
-    fprintf(logfile,"blas dgemm NN: %g\n", 1.0*n*m*k*CLOCKS_PER_SEC/(t2-t1));
-    fprintf(logfile,"my   dgemm NN: %g\n", 1.0*n*m*k*CLOCKS_PER_SEC/(t3-t2));
+    fprintf(logfile,"blas dgemm NN: %g\n", 10.0*n*m*k*CLOCKS_PER_SEC/(t2-t1));
+    fprintf(logfile,"my   dgemm NN: %g\n", 10.0*n*m*k*CLOCKS_PER_SEC/(t3-t2));
     fprintf(logfile,"ratio        : %g\n", (t2-t1)/(double)(t3-t2));
 
     // transpose b
@@ -53,8 +53,8 @@ int main()
     for(i=0; i<10; i++)my_dgemm(CblasRowMajor,CblasNoTrans,CblasTrans,
 	    m,n,k,alpha,a,k,b,k,beta,c,n);
     t3=clock();
-    fprintf(logfile,"blas dgemm NT: %g\n", 1.0*n*m*k*CLOCKS_PER_SEC/(t2-t1));
-    fprintf(logfile,"my   dgemm NT: %g\n", 1.0*n*m*k*CLOCKS_PER_SEC/(t3-t2));
+    fprintf(logfile,"blas dgemm NT: %g\n", 10.0*n*m*k*CLOCKS_PER_SEC/(t2-t1));
+    fprintf(logfile,"my   dgemm NT: %g\n", 10.0*n*m*k*CLOCKS_PER_SEC/(t3-t2));
     fprintf(logfile,"ratio        : %g\n", (t2-t1)/(double)(t3-t2));
 
     // transpose a
@@ -67,8 +67,8 @@ int main()
     for(i=0; i<10; i++)my_dgemm(CblasRowMajor,CblasTrans,CblasNoTrans,
 	    m,n,k,alpha,a,m,b,n,beta,c,n);
     t3=clock();
-    fprintf(logfile,"blas dgemm TN: %g\n", 1.0*n*m*k*CLOCKS_PER_SEC/(t2-t1));
-    fprintf(logfile,"my   dgemm TN: %g\n", 1.0*n*m*k*CLOCKS_PER_SEC/(t3-t2));
+    fprintf(logfile,"blas dgemm TN: %g\n", 10.0*n*m*k*CLOCKS_PER_SEC/(t2-t1));
+    fprintf(logfile,"my   dgemm TN: %g\n", 10.0*n*m*k*CLOCKS_PER_SEC/(t3-t2));
     fprintf(logfile,"ratio        : %g\n", (t2-t1)/(double)(t3-t2));
 
     // transpose a,b
@@ -81,8 +81,8 @@ int main()
     for(i=0; i<10; i++)my_dgemm(CblasRowMajor,CblasTrans,CblasTrans,
 	    m,n,k,alpha,a,m,b,k,beta,c,n);
     t3=clock();
-    fprintf(logfile,"blas dgemm TT: %g\n", 1.0*n*m*k*CLOCKS_PER_SEC/(t2-t1));
-    fprintf(logfile,"my   dgemm TT: %g\n", 1.0*n*m*k*CLOCKS_PER_SEC/(t3-t2));
+    fprintf(logfile,"blas dgemm TT: %g\n", 10.0*n*m*k*CLOCKS_PER_SEC/(t2-t1));
+    fprintf(logfile,"my   dgemm TT: %g\n", 10.0*n*m*k*CLOCKS_PER_SEC/(t3-t2));
     fprintf(logfile,"ratio        : %g\n", (t2-t1)/(double)(t3-t2));
 
     free(a);

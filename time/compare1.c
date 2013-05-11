@@ -31,8 +31,8 @@ int main()
     t2=clock();
     for(i=0; i<10; i++)my_daxpy(n,alpha,x,1,y,1);
     t3=clock();
-    fprintf(logfile,"blas daxpy: %g\n", 1.0*n*CLOCKS_PER_SEC/(t2-t1));
-    fprintf(logfile,"my   daxpy: %g\n", 1.0*n*CLOCKS_PER_SEC/(t3-t2));
+    fprintf(logfile,"blas daxpy: %g\n", 10.0*n*CLOCKS_PER_SEC/(t2-t1));
+    fprintf(logfile,"my   daxpy: %g\n", 10.0*n*CLOCKS_PER_SEC/(t3-t2));
     fprintf(logfile,"ratio     : %g\n", (t2-t1)/(double)(t3-t2));
 
     t1=clock();
@@ -40,8 +40,8 @@ int main()
     t2=clock();
     for(i=0; i<10; i++){x[0]+=my_ddot(n,x,1,y,1);}
     t3=clock();
-    fprintf(logfile,"blas ddot: %g\n", 1.0*n*CLOCKS_PER_SEC/(t2-t1));
-    fprintf(logfile,"my   ddot: %g\n", 1.0*n*CLOCKS_PER_SEC/(t3-t2));
+    fprintf(logfile,"blas ddot: %g\n", 10.0*n*CLOCKS_PER_SEC/(t2-t1));
+    fprintf(logfile,"my   ddot: %g\n", 10.0*n*CLOCKS_PER_SEC/(t3-t2));
     fprintf(logfile,"ratio    : %g\n", (t2-t1)/(double)(t3-t2));
 
     t1=clock();
@@ -49,8 +49,8 @@ int main()
     t2=clock();
     for(i=0; i<10; i++)my_dscal(n,alpha,x,1);
     t3=clock();
-    fprintf(logfile,"blas dscal: %g\n", 1.0*n*CLOCKS_PER_SEC/(t2-t1));
-    fprintf(logfile,"my   dscal: %g\n", 1.0*n*CLOCKS_PER_SEC/(t3-t2));
+    fprintf(logfile,"blas dscal: %g\n", 10.0*n*CLOCKS_PER_SEC/(t2-t1));
+    fprintf(logfile,"my   dscal: %g\n", 10.0*n*CLOCKS_PER_SEC/(t3-t2));
     fprintf(logfile,"ratio     : %g\n", (t2-t1)/(double)(t3-t2));
 
     t1=clock();
@@ -58,8 +58,8 @@ int main()
     t2=clock();
     for(i=0; i<10; i++){x[0]+=my_idamax(n,x,1);}
     t3=clock();
-    fprintf(logfile,"blas idamax: %g\n", 1.0*n*CLOCKS_PER_SEC/(t2-t1));
-    fprintf(logfile,"my   idamax: %g\n", 1.0*n*CLOCKS_PER_SEC/(t3-t2));
+    fprintf(logfile,"blas idamax: %g\n", 10.0*n*CLOCKS_PER_SEC/(t2-t1));
+    fprintf(logfile,"my   idamax: %g\n", 10.0*n*CLOCKS_PER_SEC/(t3-t2));
     fprintf(logfile,"ratio      : %g\n", (t2-t1)/(double)(t3-t2));
 
     free(x);

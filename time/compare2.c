@@ -38,8 +38,8 @@ int main()
     for(i=0; i<10; i++)my_dgemv(CblasRowMajor,CblasNoTrans,
 	    m,n,alpha,a,n,x,1,beta,y,1);
     t3=clock();
-    fprintf(logfile,"blas dgemv: %g\n", 1.0*n*m*CLOCKS_PER_SEC/(t2-t1));
-    fprintf(logfile,"my   dgemv: %g\n", 1.0*n*m*CLOCKS_PER_SEC/(t3-t2));
+    fprintf(logfile,"blas dgemv: %g\n", 10.0*n*m*CLOCKS_PER_SEC/(t2-t1));
+    fprintf(logfile,"my   dgemv: %g\n", 10.0*n*m*CLOCKS_PER_SEC/(t3-t2));
     fprintf(logfile,"ratio     : %g\n", (t2-t1)/(double)(t3-t2));
 
     // transpose
@@ -50,8 +50,8 @@ int main()
     for(i=0; i<10; i++)my_dgemv(CblasRowMajor,CblasTrans,
 	    m,n,alpha,a,n,y,1,beta,x,1);
     t3=clock();
-    fprintf(logfile,"blas dgemv T: %g\n", 1.0*n*m*CLOCKS_PER_SEC/(t2-t1));
-    fprintf(logfile,"my   dgemv T: %g\n", 1.0*n*m*CLOCKS_PER_SEC/(t3-t2));
+    fprintf(logfile,"blas dgemv T: %g\n", 10.0*n*m*CLOCKS_PER_SEC/(t2-t1));
+    fprintf(logfile,"my   dgemv T: %g\n", 10.0*n*m*CLOCKS_PER_SEC/(t3-t2));
     fprintf(logfile,"ratio     : %g\n", (t2-t1)/(double)(t3-t2));
 
     //dger(order, m, n, alpha, dx, incx, dy, incy a, lda)
@@ -62,8 +62,8 @@ int main()
     t2=clock();
     for(i=0; i<10; i++)my_dger(CblasRowMajor,m,n,alpha,y,1,x,1,a,n);
     t3=clock();
-    fprintf(logfile,"blas dger: %g\n", 1.0*n*m*CLOCKS_PER_SEC/(t2-t1));
-    fprintf(logfile,"my   dger: %g\n", 1.0*n*m*CLOCKS_PER_SEC/(t3-t2));
+    fprintf(logfile,"blas dger: %g\n", 10.0*n*m*CLOCKS_PER_SEC/(t2-t1));
+    fprintf(logfile,"my   dger: %g\n", 10.0*n*m*CLOCKS_PER_SEC/(t3-t2));
     fprintf(logfile,"ratio    : %g\n", (t2-t1)/(double)(t3-t2));
 
     free(a);
