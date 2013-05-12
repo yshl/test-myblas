@@ -23,12 +23,25 @@ void my_dgemv(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans_a,
 	    // y[i]=beta*y[i]+alpha*a[i,j]*x[j]
 	    // y[i]=beta*y[i]+alpha*a[i*lda+j]*x[j]
 	    size_t i,j;
-	    for(i=0; i<m; i++){
-		double sum=beta*y[i*incy];
-		for(j=0; j<n; j++){
-		    sum+=alpha*a[i*lda+j]*x[j*incx];
+	    const size_t unlp=4;
+	    for(i=0; i+unlp<=m; i+=unlp){
+		double sum[unlp];
+		for(j=0; j<unlp; j++){
+		    sum[j]=0.0;
 		}
-		y[i*incy]=sum;
+		for(j=0; j<n; j++){
+		    double xj=x[j*incx];
+		    sum[0]+=a[(i+0)*lda+j]*xj;
+		    sum[1]+=a[(i+1)*lda+j]*xj;
+		    sum[2]+=a[(i+2)*lda+j]*xj;
+		    sum[3]+=a[(i+3)*lda+j]*xj;
+		}
+		for(j=0; j<unlp; j++){
+		    y[(i+j)*incy]=beta*y[(i+j)*incy]+alpha*sum[j];
+		}
+	    }
+	    for(; i<m; i++){
+		y[i*incy]=beta*y[i*incy]+alpha*my_ddot(n,&a[i*lda],1,x,incx);
 	    }
 	}else{
 	    // y[j]=beta*y[j]+alpha*a[i,j]*x[i]
@@ -50,33 +63,11 @@ void my_dgemv(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans_a,
 	if(trans_a==CblasNoTrans){
 	    // y[i]=beta*y[i]+alpha*a[i,j]*x[j]
 	    // y[i]=beta*y[i]+alpha*a[j*lda+i]*x[j]
-            my_dgemv(CblasRowMajor,CblasTrans,n,m,alpha,a,lda,x,incx,beta,y,incy);
-
-	    /*
-	    size_t i,j;
-	    for(i=0; i<m; i++){
-		y[i*incy]*=beta;
-	    }
-	    for(j=0; j<n; j++){
-		double axj=alpha*x[j*incx];
-		for(i=0; i<m; i++){
-		    y[i*incy]+=axj*a[j*lda+i];
-		}
-	    }
-	    */
+	    my_dgemv(CblasRowMajor,CblasTrans,n,m,alpha,a,lda,x,incx,beta,y,incy);
 	}else{
 	    // y[j]=beta*y[j]+alpha*a[i,j]*x[i]
 	    // y[j]=beta*y[j]+alpha*a[j*lda+i]*x[i]
-            my_dgemv(CblasRowMajor,CblasNoTrans,n,m,alpha,a,lda,x,incx,beta,y,incy);
-	    /*
-	    size_t i,j;
-	    for(j=0; j<n; j++){
-		y[j*incy]*=beta;
-		for(i=0; i<m; i++){
-		    y[j*incy]+=alpha*a[j*lda+i]*x[i*incx];
-		}
-	    }
-	    */
+	    my_dgemv(CblasRowMajor,CblasNoTrans,n,m,alpha,a,lda,x,incx,beta,y,incy);
 	}
     }
 }

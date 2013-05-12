@@ -22,6 +22,25 @@ void test_dgemv()
     }
 }
 
+void test_dgemv2()
+{
+    const size_t m=30, n=45;
+    double a[m*n];
+    double x[n];
+    double y[m];
+    double z[m];
+    size_t i;
+    for(i=0; i<m*n; i++) a[i]=i;
+    for(i=0; i<n; i++) x[i]=i+m*n;
+    for(i=0; i<m; i++) y[i]=z[i]=i*i;
+
+    my_dgemv(CblasRowMajor,CblasNoTrans,m,n,2.0,a,n,x,1,2.0,y,1);
+    cblas_dgemv(CblasRowMajor,CblasNoTrans,m,n,2.0,a,n,x,1,2.0,z,1);
+    for(i=0; i<m; i++){
+	assert(y[i]==z[i]);
+    }
+}
+
 void test_dgemv_trans()
 {
     const size_t m=3, n=4;
