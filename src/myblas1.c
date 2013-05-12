@@ -32,15 +32,18 @@ void my_dscal(size_t n, double alpha, double* x, size_t incx)
 }
 size_t my_idamax(size_t n, const double *x, size_t incx)
 {
-    double xmax=fabs(x[0]);
-    size_t imax=0;
-    size_t i;
+    double xmax;
+    size_t imax, i;
+    if(n==0){
+	return 0;
+    }
+    imax=0;
+    xmax=fabs(x[0]);
     for(i=1; i<n; i++){
-	size_t i1=i*incx;
-	double xi=fabs(x[i1]);
+	double xi=fabs(x[i*incx]);
 	if(xi>xmax){
 	    xmax=xi;
-	    imax=i1;
+	    imax=i;
 	}
     }
     return imax;

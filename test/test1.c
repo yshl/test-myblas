@@ -46,11 +46,19 @@ void test_idamax()
     assert(my_idamax(n,x,1)==cblas_idamax(n,x,1));
 }
 
+void test_idamax2()
+{
+    const size_t n=5;
+    double x[5]={3,1,5,2,4};
+    assert(my_idamax(n,x,2)==cblas_idamax(n,x,2));
+}
+
 int main()
 {
     test_daxpy();
     test_ddot();
     test_dscal();
     test_idamax();
+    test_idamax2();
     return 0;
 }
