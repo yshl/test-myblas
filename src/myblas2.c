@@ -96,6 +96,30 @@ void my_dgemv(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans_a,
     }
 }
 
+static void my_dger_R(size_t m, size_t n, double alpha,
+	const double* dx, size_t incx, const double* dy, size_t incy,
+	double *a, size_t lda)
+{
+    // a[i,j]=a[i*lda+j]
+    // a[i*lda+j]+=alpha*x[i]*y[j]
+    size_t i,j;
+    const size_t unlp=4;
+    for(i=0; i+unlp<=m; i+=unlp){
+	double axi[unlp];
+	for(j=0; j<unlp; j++) axi[j]=alpha*dx[(i+j)*incx];
+	for(j=0; j<n; j++){
+	    double yj=dy[j*incy];
+	    a[(i+0)*lda+j]+=axi[0]*yj;
+	    a[(i+1)*lda+j]+=axi[1]*yj;
+	    a[(i+2)*lda+j]+=axi[2]*yj;
+	    a[(i+3)*lda+j]+=axi[3]*yj;
+	}
+    }
+    for(; i<m; i++){
+	my_daxpy(n,alpha*dx[i*incx],dy,incy,&a[i*lda],1);
+    }
+}
+
 void my_dger(enum CBLAS_ORDER order, size_t m, size_t n, double alpha,
 	const double* dx, size_t incx, const double* dy, size_t incy,
 	double *a, size_t lda)
@@ -105,23 +129,12 @@ void my_dger(enum CBLAS_ORDER order, size_t m, size_t n, double alpha,
     if(alpha==0.0) return;
     if(order==CblasRowMajor){
 	// a[i,j]=a[i*lda+j]
-	size_t i,j;
-	for(i=0; i<m; i++){
-	    double axi;
-	    axi=alpha*dx[i*incx];
-	    for(j=0; j<n; j++){
-		a[i*lda+j]+=axi*dy[j*incy];
-	    }
-	}
+	// a[i*lda+j]+=alpha*x[i]*y[j]
+	my_dger_R(m,n,alpha,dx,incx,dy,incy,a,lda);
     }else if(order==CblasColMajor){
 	// a[i,j]=a[j*lda+i]
-	size_t i,j;
-	for(j=0; j<n; j++){
-	    double ayj=alpha*dy[j*incy];
-	    for(i=0; i<m; i++){
-		a[j*lda+i]+=ayj*dx[i*incx];
-	    }
-	}
+	// a[j*lda+i]+=alpha*x[i]*y[j]
+	my_dger_R(n,m,alpha,dy,incy,dx,incx,a,lda);
     }else{
 	fprintf(stderr, "Illegal argument order %d\n", order);
 	exit(1);

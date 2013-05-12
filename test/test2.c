@@ -99,6 +99,24 @@ void test_dger()
     }
 }
 
+void test_dger2()
+{
+    const size_t m=35, n=45;
+    double a[m*n];
+    double b[m*n];
+    double x[m];
+    double y[n];
+    size_t i;
+    for(i=0; i<m*n; i++) b[i]=a[i]=i;
+    for(i=0; i<m; i++) x[i]=i+m*n;
+    for(i=0; i<n; i++) y[i]=i*i;
+    my_dger(CblasRowMajor,m,n,2.0,x,1,y,1,a,n);
+    cblas_dger(CblasRowMajor,m,n,2.0,x,1,y,1,b,n);
+    for(i=0; i<m*n; i++){
+	assert(a[i]==b[i]);
+    }
+}
+
 void test_dgemv_col()
 {
     const size_t m=3, n=4;
@@ -167,6 +185,7 @@ int main()
     test_dgemv_trans();
     test_dgemv_trans2();
     test_dger();
+    test_dger2();
     test_dgemv_col();
     test_dgemv_col_trans();
     test_dger_col();
