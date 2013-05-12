@@ -1,5 +1,5 @@
 foreach(prog compare1 compare2 compare3)
     ADD_EXECUTABLE(${prog} ${prog}.c)
     TARGET_LINK_LIBRARIES(${prog} myblas ${CBLAS_LIBRARIES})
-    add_test(${prog} ${prog})
+    add_test(${prog} ${prog} ${prog}.log)
 endforeach()

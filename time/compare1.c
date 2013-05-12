@@ -4,18 +4,23 @@
 #include<cblas.h>
 #include"myblas.h"
 
-int main()
+int main(int argc, char *argv[])
 {
     size_t n=20000000;
     double *x, *y;
     double alpha=2.0;
     clock_t t1,t2,t3;
     size_t i;
-    char *logname="compare1.log";
     FILE *logfile;
 
-    logfile=fopen(logname,"w");
-    if(logfile==NULL){perror(logname); exit(1);}
+    logfile=stdout;
+    if(argc>1){
+	logfile=fopen(argv[1],"w");
+	if(logfile==NULL){
+	    perror(argv[1]);
+	    exit(1);
+	}
+    }
 
     x=malloc(sizeof(double)*n);
     if(x==NULL){perror("malloc x"); exit(1);}

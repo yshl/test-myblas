@@ -4,7 +4,7 @@
 #include<cblas.h>
 #include"myblas.h"
 
-int main()
+int main(int argc, char *argv[])
 {
     size_t m=10000;
     size_t n=4000;
@@ -12,11 +12,16 @@ int main()
     double alpha=2.0, beta=3.0;
     clock_t t1,t2,t3;
     size_t i;
-    char *logname="compare2.log";
     FILE *logfile;
 
-    logfile=fopen(logname,"w");
-    if(logfile==NULL){perror(logname); exit(1);}
+    logfile=stdout;
+    if(argc>1){
+	logfile=fopen(argv[1],"w");
+	if(logfile==NULL){
+	    perror(argv[1]);
+	    exit(1);
+	}
+    }
 
     a=malloc(sizeof(double)*n*m);
     if(a==NULL){perror("malloc a"); exit(1);}
