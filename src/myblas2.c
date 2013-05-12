@@ -26,9 +26,7 @@ void my_dgemv(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans_a,
 	    const size_t unlp=4;
 	    for(i=0; i+unlp<=m; i+=unlp){
 		double sum[unlp];
-		for(j=0; j<unlp; j++){
-		    sum[j]=0.0;
-		}
+		for(j=0; j<unlp; j++) sum[j]=0.0;
 		for(j=0; j<n; j++){
 		    double xj=x[j*incx];
 		    sum[0]+=a[(i+0)*lda+j]*xj;
@@ -47,14 +45,22 @@ void my_dgemv(enum CBLAS_ORDER order, enum CBLAS_TRANSPOSE trans_a,
 	    // y[j]=beta*y[j]+alpha*a[i,j]*x[i]
 	    // y[j]=beta*y[j]+alpha*a[i*lda+j]*x[i]
 	    size_t i,j;
-	    for(j=0; j<n; j++){
-		y[j*incy]*=beta;
-	    }
-	    for(i=0; i<m; i++){
-		double ax=alpha*x[i*incx];
+	    const size_t unlp=6;
+	    my_dscal(n,beta,y,incy);
+	    for(i=0; i+unlp<=m; i+=unlp){
+		double ax[unlp];
+		for(j=0; j<unlp; j++) ax[j]=alpha*x[(i+j)*incx];
 		for(j=0; j<n; j++){
-		    y[j*incy]+=ax*a[i*lda+j];
+		    y[j*incy]+=ax[0]*a[(i+0)*lda+j]
+			      +ax[1]*a[(i+1)*lda+j]
+			      +ax[2]*a[(i+2)*lda+j]
+			      +ax[3]*a[(i+3)*lda+j]
+			      +ax[4]*a[(i+4)*lda+j]
+			      +ax[5]*a[(i+5)*lda+j];
 		}
+	    }
+	    for(; i<m; i++){
+		my_daxpy(n,alpha*x[i*incx],&a[i*lda],1,y,incy);
 	    }
 	}
     }else{

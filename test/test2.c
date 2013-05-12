@@ -60,6 +60,25 @@ void test_dgemv_trans()
     }
 }
 
+void test_dgemv_trans2()
+{
+    const size_t m=35, n=45;
+    double a[m*n];
+    double x[m];
+    double y[n];
+    double z[n];
+    size_t i;
+    for(i=0; i<m*n; i++) a[i]=i;
+    for(i=0; i<n; i++) x[i]=i+m*n;
+    for(i=0; i<m; i++) y[i]=z[i]=i*i;
+
+    my_dgemv(CblasRowMajor,CblasTrans,m,n,2.0,a,n,x,1,2.0,y,1);
+    cblas_dgemv(CblasRowMajor,CblasTrans,m,n,2.0,a,n,x,1,2.0,z,1);
+    for(i=0; i<m; i++){
+	assert(y[i]==z[i]);
+    }
+}
+
 void test_dger()
 {
     const size_t m=3, n=4;
@@ -144,7 +163,9 @@ void test_dger_col()
 int main()
 {
     test_dgemv();
+    test_dgemv2();
     test_dgemv_trans();
+    test_dgemv_trans2();
     test_dger();
     test_dgemv_col();
     test_dgemv_col_trans();
