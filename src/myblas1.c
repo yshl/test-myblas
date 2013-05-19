@@ -39,7 +39,22 @@ size_t my_idamax(size_t n, const double *x, size_t incx)
     }
     imax=0;
     xmax=fabs(x[0]);
-    for(i=1; i<n; i++){
+    for(i=1; i+1<n; i+=2){
+	double xi=fabs(x[i*incx]);
+	double xi1=fabs(x[(i+1)*incx]);
+	if(xi1>xi){
+	    if(xi1>xmax){
+		xmax=xi1;
+		imax=i+1;
+	    }
+	}else{
+	    if(xi>xmax){
+		xmax=xi;
+		imax=i;
+	    }
+	}
+    }
+    for(; i<n; i++){
 	double xi=fabs(x[i*incx]);
 	if(xi>xmax){
 	    xmax=xi;
