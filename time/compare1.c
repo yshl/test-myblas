@@ -41,9 +41,9 @@ int main(int argc, char *argv[])
     fprintf(logfile,"ratio     : %g\n", (t2-t1)/(double)(t3-t2));
 
     t1=clock();
-    for(i=0; i<10; i++){x[0]+=cblas_ddot(n,x,1,y,1);}
+    for(i=0; i<10; i++){volatile double z=cblas_ddot(n,x,1,y,1);}
     t2=clock();
-    for(i=0; i<10; i++){x[0]+=my_ddot(n,x,1,y,1);}
+    for(i=0; i<10; i++){volatile double z=my_ddot(n,x,1,y,1);}
     t3=clock();
     fprintf(logfile,"blas ddot: %g\n", 10.0*n*CLOCKS_PER_SEC/(t2-t1));
     fprintf(logfile,"my   ddot: %g\n", 10.0*n*CLOCKS_PER_SEC/(t3-t2));
@@ -59,9 +59,9 @@ int main(int argc, char *argv[])
     fprintf(logfile,"ratio     : %g\n", (t2-t1)/(double)(t3-t2));
 
     t1=clock();
-    for(i=0; i<10; i++){x[0]+=cblas_idamax(n,x,1);}
+    for(i=0; i<10; i++){volatile int j=cblas_idamax(n,x,1);}
     t2=clock();
-    for(i=0; i<10; i++){x[0]+=my_idamax(n,x,1);}
+    for(i=0; i<10; i++){volatile size_t j=my_idamax(n,x,1);}
     t3=clock();
     fprintf(logfile,"blas idamax: %g\n", 10.0*n*CLOCKS_PER_SEC/(t2-t1));
     fprintf(logfile,"my   idamax: %g\n", 10.0*n*CLOCKS_PER_SEC/(t3-t2));
