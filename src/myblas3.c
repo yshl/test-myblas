@@ -12,26 +12,31 @@ static void dgemm_nn(size_t m, size_t n, size_t k,
 	double *c, size_t ldc)
 {
     size_t i,j,l;
-    const size_t unlp=4;
+    const size_t unlp=8;
 
-    for(i=0; i+unlp<=m; i+=unlp){
-	for(l=0; l<k; l++){
-	    double ail0,ail1,ail2,ail3;
-	    ail0=alpha*a[(i+0)*lda+l];
-	    ail1=alpha*a[(i+1)*lda+l];
-	    ail2=alpha*a[(i+2)*lda+l];
-	    ail3=alpha*a[(i+3)*lda+l];
+    for(i=0; i<m; i++){
+	for(l=0; l+unlp<=k; l+=unlp){
+	    double ail0,ail1,ail2,ail3,ail4,ail5,ail6,ail7;
+	    ail0=alpha*a[i*lda+l+0];
+	    ail1=alpha*a[i*lda+l+1];
+	    ail2=alpha*a[i*lda+l+2];
+	    ail3=alpha*a[i*lda+l+3];
+	    ail4=alpha*a[i*lda+l+4];
+	    ail5=alpha*a[i*lda+l+5];
+	    ail6=alpha*a[i*lda+l+6];
+	    ail7=alpha*a[i*lda+l+7];
 	    for(j=0; j<n; j++){
-		double blj=b[l*ldb+j];
-		c[(i+0)*ldc+j]+=ail0*blj;
-		c[(i+1)*ldc+j]+=ail1*blj;
-		c[(i+2)*ldc+j]+=ail2*blj;
-		c[(i+3)*ldc+j]+=ail3*blj;
+		c[i*ldc+j]+=ail0*b[(l+0)*ldb+j]
+		    +ail1*b[(l+1)*ldb+j]
+		    +ail2*b[(l+2)*ldb+j]
+		    +ail3*b[(l+3)*ldb+j]
+		    +ail4*b[(l+4)*ldb+j]
+		    +ail5*b[(l+5)*ldb+j]
+		    +ail6*b[(l+6)*ldb+j]
+		    +ail7*b[(l+7)*ldb+j];
 	    }
 	}
-    }
-    for(; i<m; i++){
-	for(l=0; l<k; l++){
+	for(; l<k; l++){
 	    double ail=alpha*a[i*lda+l];
 	    for(j=0; j<n; j++){
 		c[i*ldc+j]+=ail*b[l*ldb+j];
@@ -141,13 +146,13 @@ static void dgemm_tn(size_t m, size_t n, size_t k,
 	    double ali7=alpha*a[(l+7)*lda+i];
 	    for(j=0; j<n; j++){
 		c[i*ldc+j]+=ali0*b[(l+0)*ldb+j]
-			+ali1*b[(l+1)*ldb+j]
-			+ali2*b[(l+2)*ldb+j]
-			+ali3*b[(l+3)*ldb+j]
-			+ali4*b[(l+4)*ldb+j]
-			+ali5*b[(l+5)*ldb+j]
-			+ali6*b[(l+6)*ldb+j]
-			+ali7*b[(l+7)*ldb+j];
+		    +ali1*b[(l+1)*ldb+j]
+		    +ali2*b[(l+2)*ldb+j]
+		    +ali3*b[(l+3)*ldb+j]
+		    +ali4*b[(l+4)*ldb+j]
+		    +ali5*b[(l+5)*ldb+j]
+		    +ali6*b[(l+6)*ldb+j]
+		    +ali7*b[(l+7)*ldb+j];
 	    }
 	}
     }
