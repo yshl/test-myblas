@@ -16,24 +16,20 @@ static void dgemm_nn(size_t m, size_t n, size_t k,
 
     for(i=0; i<m; i++){
 	for(l=0; l+unlp<=k; l+=unlp){
-	    double ail0,ail1,ail2,ail3,ail4,ail5,ail6,ail7;
-	    ail0=alpha*a[i*lda+l+0];
-	    ail1=alpha*a[i*lda+l+1];
-	    ail2=alpha*a[i*lda+l+2];
-	    ail3=alpha*a[i*lda+l+3];
-	    ail4=alpha*a[i*lda+l+4];
-	    ail5=alpha*a[i*lda+l+5];
-	    ail6=alpha*a[i*lda+l+6];
-	    ail7=alpha*a[i*lda+l+7];
+	    size_t i1;
+	    double ail[unlp];
+	    for(i1=0; i1<unlp; i1++){
+		ail[i1]=alpha*a[i*lda+l+i1];
+	    }
 	    for(j=0; j<n; j++){
-		c[i*ldc+j]+=ail0*b[(l+0)*ldb+j]
-		    +ail1*b[(l+1)*ldb+j]
-		    +ail2*b[(l+2)*ldb+j]
-		    +ail3*b[(l+3)*ldb+j]
-		    +ail4*b[(l+4)*ldb+j]
-		    +ail5*b[(l+5)*ldb+j]
-		    +ail6*b[(l+6)*ldb+j]
-		    +ail7*b[(l+7)*ldb+j];
+		c[i*ldc+j]+=ail[0]*b[(l+0)*ldb+j]
+		    +ail[1]*b[(l+1)*ldb+j]
+		    +ail[2]*b[(l+2)*ldb+j]
+		    +ail[3]*b[(l+3)*ldb+j]
+		    +ail[4]*b[(l+4)*ldb+j]
+		    +ail[5]*b[(l+5)*ldb+j]
+		    +ail[6]*b[(l+6)*ldb+j]
+		    +ail[7]*b[(l+7)*ldb+j];
 	    }
 	}
 	for(; l<k; l++){
@@ -73,26 +69,31 @@ static void dgemm_nt(size_t m, size_t n, size_t k,
 	double *c, size_t ldc)
 {
     size_t i,j,l;
-    const size_t unlp=6;
-    for(i=0; i+unlp<=m; i+=unlp){
+    const size_t unlp1=12, unlp2=6;
+    for(i=0; i+unlp1<=m; i+=unlp1){
 	for(j=0; j<n; j++){
-	    double sum0=0.0,sum1=0.0,sum2=0.0,sum3=0.0,
-		   sum4=0.0,sum5=0.0;
-	    for(l=0; l<k; l++){
-		double bjl=b[j*ldb+l];
-		sum0+=a[(i+0)*lda+l]*bjl;
-		sum1+=a[(i+1)*lda+l]*bjl;
-		sum2+=a[(i+2)*lda+l]*bjl;
-		sum3+=a[(i+3)*lda+l]*bjl;
-		sum4+=a[(i+4)*lda+l]*bjl;
-		sum5+=a[(i+5)*lda+l]*bjl;
+	    size_t i1;
+	    double sum[unlp1];
+	    for(i1=0; i1<unlp1; i1++){
+		sum[i1]=0.0;
 	    }
-	    c[(i+0)*ldc+j]+=alpha*sum0;
-	    c[(i+1)*ldc+j]+=alpha*sum1;
-	    c[(i+2)*ldc+j]+=alpha*sum2;
-	    c[(i+3)*ldc+j]+=alpha*sum3;
-	    c[(i+4)*ldc+j]+=alpha*sum4;
-	    c[(i+5)*ldc+j]+=alpha*sum5;
+	    for(l=0; l+unlp2<=k; l+=unlp2){
+		size_t l2;
+		for(i1=0; i1<unlp1; i1++){
+		    for(l2=0; l2<unlp2; l2++){
+			sum[i1]+=a[(i+i1)*lda+l+l2]*b[j*ldb+l+l2];
+		    }
+		}
+	    }
+	    for(; l<k; l++){
+		double bjl=b[j*ldb+l];
+		for(i1=0; i1<unlp1; i1++){
+		    sum[i1]+=a[(i+i1)*lda+l]*bjl;
+		}
+	    }
+	    for(i1=0; i1<unlp1; i1++){
+		c[(i+i1)*ldc+j]+=alpha*sum[i1];
+	    }
 	}
     }
     for(; i<m; i++){
@@ -136,23 +137,20 @@ static void dgemm_tn(size_t m, size_t n, size_t k,
     const size_t unlp=8;
     for(l=0; l+unlp<=k; l+=unlp){
 	for(i=0; i<m; i++){
-	    double ali0=alpha*a[(l+0)*lda+i];
-	    double ali1=alpha*a[(l+1)*lda+i];
-	    double ali2=alpha*a[(l+2)*lda+i];
-	    double ali3=alpha*a[(l+3)*lda+i];
-	    double ali4=alpha*a[(l+4)*lda+i];
-	    double ali5=alpha*a[(l+5)*lda+i];
-	    double ali6=alpha*a[(l+6)*lda+i];
-	    double ali7=alpha*a[(l+7)*lda+i];
+	    double ali[unlp];
+	    size_t i1;
+	    for(i1=0; i1<unlp; i1++){
+		ali[i1]=alpha*a[(l+i1)*lda+i];
+	    }
 	    for(j=0; j<n; j++){
-		c[i*ldc+j]+=ali0*b[(l+0)*ldb+j]
-		    +ali1*b[(l+1)*ldb+j]
-		    +ali2*b[(l+2)*ldb+j]
-		    +ali3*b[(l+3)*ldb+j]
-		    +ali4*b[(l+4)*ldb+j]
-		    +ali5*b[(l+5)*ldb+j]
-		    +ali6*b[(l+6)*ldb+j]
-		    +ali7*b[(l+7)*ldb+j];
+		c[i*ldc+j]+=ali[0]*b[(l+0)*ldb+j]
+		    +ali[1]*b[(l+1)*ldb+j]
+		    +ali[2]*b[(l+2)*ldb+j]
+		    +ali[3]*b[(l+3)*ldb+j]
+		    +ali[4]*b[(l+4)*ldb+j]
+		    +ali[5]*b[(l+5)*ldb+j]
+		    +ali[6]*b[(l+6)*ldb+j]
+		    +ali[7]*b[(l+7)*ldb+j];
 	    }
 	}
     }
@@ -192,31 +190,30 @@ static void dgemm_tt(size_t m, size_t n, size_t k,
 	double *c, size_t ldc)
 {
     size_t i,j,l;
-    const size_t unlp=4;
-    for(i=0; i<m; i++){
-	for(j=0; j+unlp<=n; j+=unlp){
-	    double sum0=0.0;
-	    double sum1=0.0;
-	    double sum2=0.0;
-	    double sum3=0.0;
-	    for(l=0; l<k; l++){
-		double ali=a[l*lda+i];
-		sum0+=ali*b[(j+0)*ldb+l];
-		sum1+=ali*b[(j+1)*ldb+l];
-		sum2+=ali*b[(j+2)*ldb+l];
-		sum3+=ali*b[(j+3)*ldb+l];
+    size_t unlp=8;
+    for(j=0; j<n; j++){
+	for(l=0; l+unlp<=k; l+=unlp){
+	    double bjl[unlp];
+	    size_t l1;
+	    for(l1=0; l1<unlp; l1++){
+		bjl[l1]=alpha*b[j*ldb+l+l1];
 	    }
-	    c[i*ldc+j+0]+=alpha*sum0;
-	    c[i*ldc+j+1]+=alpha*sum1;
-	    c[i*ldc+j+2]+=alpha*sum2;
-	    c[i*ldc+j+3]+=alpha*sum3;
+	    for(i=0; i<m; i++){
+		c[i*ldc+j]+=a[(l+0)*lda+i]*bjl[0]
+		    +a[(l+1)*lda+i]*bjl[1]
+		    +a[(l+2)*lda+i]*bjl[2]
+		    +a[(l+3)*lda+i]*bjl[3]
+		    +a[(l+4)*lda+i]*bjl[4]
+		    +a[(l+5)*lda+i]*bjl[5]
+		    +a[(l+6)*lda+i]*bjl[6]
+		    +a[(l+7)*lda+i]*bjl[7];
+	    }
 	}
-	for(; j<n; j++){
-	    double sum=0.0;
-	    for(l=0; l<k; l++){
-		sum+=a[l*lda+i]*b[j*ldb+l];
+	for(; l<k; l++){
+	    double bjl=alpha*b[j*ldb+l];
+	    for(i=0; i<m; i++){
+		c[i*ldc+j]+=a[l*lda+i]*bjl;
 	    }
-	    c[i*ldc+j]+=alpha*sum;
 	}
     }
 }

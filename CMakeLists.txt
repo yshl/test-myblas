@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
 
-SET(CMAKE_C_FLAGS_RELEASE "-O2 -march=native -funroll-loops")
+SET(CMAKE_C_FLAGS_RELEASE "-O3 -march=native -funroll-loops")
 SET(CMAKE_C_FLAGS_DEBUG "-g -march=native")
 SET(CMAKE_BUILD_TYPE RELEASE)
 add_definitions("-Wall")
